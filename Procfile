@@ -1,0 +1,1 @@
+web: gunicorn blomain.wsgi --log-file -
