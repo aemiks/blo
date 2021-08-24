@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}Dodaj budowę {% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<style>
+    .center-column{
+		width:800px;
+		margin: 20px auto;
+		padding:20px;
+		background-color: #fff;
+		border-radius: 3px;
+		box-shadow: 6px 2px 30px 0px rgba(0,0,0,0.75);
+	}
+</style>
+{% include 'messages.html' %}
+<div class="center-column">
+        <form method="POST" action="{% url 'buildstages:add_stages' object.id %}">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+              <input type="text" name="add_stage" class="form-control" placeholder="Dodaj etap budowy" aria-label="Dodaj etap budowy" aria-describedby="basic-addon2" data-bs-toggle="tooltip" data-bs-placement="top" title="Czyli np: SSO - Stan surowy otwarty, Instalacje, Wykończenie itp.">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Dodaj</button>
+              </div>
+            </div>
+	    </form>
+        <div class="container-fluid p-1 bg-light my-1 border">
+                <center>
+                <h3> {{ object.name }}</h3>
+                 {{object.description.type}}
+                </center>
+        </div>
+            <div class="container-fluid p-2 my-2 border">
+                    {% for stage in build_stages %}
+
+                        <p><b>{{ stage.stage_name }}</b> ,zakładany koszt etapu: {{ stage.budget }}</p>
+                        <p>Etap skonczony: {{ stage.complete }}</p>
+                        Data rozpoczęcia etapu: {{ stage.stage_startdate }}
+
+
+                            <div class="container-fluid p-2 my-2 border">
+                            <button class="container-fluid p-1 my-1 border" data-toggle="modal" data-target="#stagemodal" aria-label="Dodaj materiał" aria-describedby="basic-addon2" data-bs-toggle="tooltip" data-bs-placement="top" title="Dodaj materiał lub usługę">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <div class="modal fade" id="stagemodal" tabindex="-1" aria-labelledby="StageModalLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="StageModalLabel">Dodaj materiał lub usługę</h5>
+                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                      <div class="modal-body">
+                                                <form method="POST" action="{% url 'buildstages:add_material' stage.id %}">
+                                                    {% csrf_token %}
+                                                    <div class="">
+                                                      <input type="text" name="add_material" class="form-control" placeholder="Wpisz nazwe materiału lub usługę" aria-label="Dodaj materiał lub usługę" aria-describedby="basic-addon2" data-bs-toggle="tooltip" data-bs-placement="top" title="nazwij tą pozycję według własnego uznania">
+                                                        <br>
+                                                      <input type="number" name="add_material_price" class="form-control" placeholder="Wpisz koszt lub zostaw puste" aria-label="Wpisz koszt lub zostaw puste" aria-describedby="basic-addon2" data-bs-toggle="tooltip" data-bs-placement="top" title="Wartość tą możesz dodać lub modyifkować w późniejszym etapie">
+                                                        <br>
+                                                        <div class="input-group-append">
+                                                          <button class="btn btn-outline-secondary" type="submit">Dodaj materiał lub usługę</button>
+                                                      </div>
+                                                    </div>
+                                                </form>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% with elements.get_same_lvl_stage as stages %}
+                            {% if stages %}
+                            {% for element in stages %}
+                                <li>{{ element.element_name }}</li>
+                            {% empty %}
+                                brak elementów
+                            {% endfor %}
+                            {% endif %}
+                            {% endwith %}
+                            </div>
+
+                    {% empty %}
+                        <p>brak dodanych etapów budowych</p>
+                    {% endfor %}
+                    {% for element in elements %}
+                        <p>{{element}}</p>
+                    {% endfor %}
+            </div>
+<script>
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+
+    var message_ele = document.getElementById("message_container");
+    setTimeout(function(){
+       message_ele.style.display = "none";
+    }, 2000);
+
+    function showele (stage_ele_id) {
+        $.ajax({
+            url: '/ajax/showele/',
+            data: {
+                'stage_ele_id': stage_ele_id
+            }
+        });
+    }
+</script>
+
+{% endblock %}

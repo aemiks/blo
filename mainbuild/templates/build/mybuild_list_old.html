@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Moje budowy {% endblock %}
+{% block content %}
+<br>
+<br>
+<div class="container">
+    {% if object_list %}
+        {% for object in userbuild_list %}
+            <br>
+            <div class="container px-4">
+              <div class="row gx-5">
+                    <div class="col">
+                        <div class="p-3 border bg-light">
+                         <center>
+                             <div><p><i>Nazwa budowy:</i> <b>{{ object.name }}</b> </p>
+                             <p> {{ object.description.type }}</p>
+                             <a href="{% url 'mainbuild:edit_description' id=object.id %}">Edytuj Parametry Budowy</a><br>
+                             <a href="{% url 'mainbuild:delete_build' id=object.id %}" style="color: red">Usuń budowę</a>
+                         </div>
+                         </center>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-4 border bg-light">
+                            <center>
+                            <p>Przejdź do inwestycji</p>
+                            <a href="{% url 'buildstages:build_stages' id=object.id %}"><i class="fas fa-4x fa-angle-double-right"></i></a><br>
+                            </center>
+                        </div>
+                    </div>
+              </div>
+            </div>
+        {% empty %}
+            <div><center><p>Brak dodanych budów..</p></div></center>
+    `       <div class="col">
+             <div class="p-3 border bg-light">
+                 <center>Dodaj nową budowę
+                 <div>
+                     <a class="btn" href="{% url 'mainbuild:addbuild' %}"><i class="fas fa-plus fa-3x"></i></a>
+                 </div>
+                 </center>
+             </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div><p>empty</p></div>
+    {% endif %}
+</div>
+{% endblock %}

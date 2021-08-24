@@ -1,0 +1,33 @@
+{% extends 'base_panel.html' %}
+
+{% block title %}Moje budowy {% endblock %}
+{% block content %}
+{% load static %}
+
+<div class="buildlist-container">
+    <div class="build-container">
+        <div class="build-info">
+            <p><i>Nazwa budowy:</i> <b>{{ object.name }}</b> </p>
+            <p> {{ object.description.type }}</p>
+            <a href="{% url 'mainbuild:edit_description' id=object.id %}">Edytuj Parametry Budowy</a><br>
+            <a href="{% url 'mainbuild:delete_build' id=object.id %}" style="color: red">Usuń budowę</a>
+        </div>
+        <div class="build-btns">
+            przyciski
+        </div>
+    </div>
+</div>
+<div class="buildlist-container">
+    <div class="build-container">
+        <div class="build-info">
+            info budowy
+        </div>
+        <div class="build-btns">
+            przyciski
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

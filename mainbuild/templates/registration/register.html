@@ -1,0 +1,29 @@
+{% extends 'base_panel.html' %}
+{% block title %} Register {% endblock %}
+{% load bootstrap %}
+{% block content %}
+
+<style>
+    .center-column{
+		width:800px;
+		margin: 20px auto;
+		padding:20px;
+		background-color: #fff;
+		border-radius: 3px;
+		box-shadow: 3px 2px 15px 0px rgba(0,0,0,0.75);
+	}
+</style>
+
+<div class="center-column">
+    <form method="post">
+        {% csrf_token %}
+        {{ register_form|bootstrap }}
+        <center><button type="submit">Zarejestruj</button></center>
+    </form>
+<div>
+{% endblock %}
+
+
+
+
+

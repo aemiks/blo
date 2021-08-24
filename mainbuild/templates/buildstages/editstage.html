@@ -1,0 +1,24 @@
+{% extends 'base_panel.html' %}
+{% block title %}Edytuj etap {% endblock %}
+{% load bootstrap %}
+{% block content %}
+
+<div>
+    <center>
+        <p>{{ buildstage }}</p>
+        <div class="container px-4">
+          <div class="row gx-5">
+            <div class="col">
+            <div class="p-3 border bg-light">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|bootstrap }}
+                    <button type="submit">Edytuj</button>
+                </form>
+            </div>
+            </div>
+          </div>
+        </div>
+    </center>
+</div>
+{% endblock %}

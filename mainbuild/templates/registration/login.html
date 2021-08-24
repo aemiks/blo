@@ -1,0 +1,79 @@
+{% extends 'base_panel.html' %}
+
+{% block title %} Login {% endblock %}
+{% load bootstrap %}
+{% block content %}
+
+<style>
+    .center-column{
+		width:800px;
+		margin: 20px auto;
+		padding:20px;
+		background-color: #fff;
+		border-radius: 3px;
+		box-shadow: 3px 1px 15px 0px rgba(0,0,0,0.75);
+	}
+#ac-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, .6);
+    z-index: 1001;
+}
+#popup {
+    width: 555px;
+    height: 175px;
+    background: #FFFFFF;
+    border: 5px solid #000;
+    border-radius: 25px;
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 25px;
+    box-shadow: #64686e 0px 0px 3px 3px;
+    -moz-box-shadow: #64686e 0px 0px 3px 3px;
+    -webkit-box-shadow: #64686e 0px 0px 3px 3px;
+    position: relative;
+    top: 150px;
+    left: 375px;
+}
+</style>
+
+<div class="center-column">
+    <form method="post">
+        {% csrf_token %}
+        <center>
+        {{ form|bootstrap }}<br>
+        <button type="submit"><i class="fas fa-sign-in-alt"></i>
+        </button></center>
+    </form>
+</div>
+
+<div id="ac-wrapper" style='display:none'>
+    <div id="popup">
+        <center>
+             <h2>login: test</h2>
+             <h2>hasło: test</h2>
+            <input type="submit" name="submit" value="Submit" onClick="PopUp('hide')" />
+        </center>
+    </div>
+</div>
+
+<script type="text/javascript">
+function PopUp(hideOrshow) {
+    if (hideOrshow == 'hide') document.getElementById('ac-wrapper').style.display = "none";
+    else document.getElementById('ac-wrapper').removeAttribute('style');
+}
+window.onload = function () {
+    setTimeout(function () {
+        PopUp('show');
+    }, 500);
+}
+</script>
+
+{% endblock %}
+
+
+
+
+

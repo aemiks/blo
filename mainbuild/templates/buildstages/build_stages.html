@@ -1,0 +1,206 @@
+{% extends 'base_panel.html' %}
+{% block title %}Dodaj budowę {% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<style>
+
+</style>
+
+{% include 'messages.html' %}
+<div class="build-stages-columns">
+    <div class="info-column">
+        <div class="info-items">
+           <h3> {{ object.name }}</h3>
+            {% if object.image %}
+                <p><img src="{{ object.image.url }}" class="build-image"></p>
+            {% else %}
+            {% load static %}
+                <p><img src="{% static 'assets/img/home-logo.jpg' %}" alt="" width="190" height="160"></p>
+            {% endif %}
+            <p><b><i>{{object.description.type}}</i></b></p>
+            <p><b>Województwo:</b> {{object.description.province}}</p>
+            <p><b>Miasto:</b> {{object.description.location}}</p>
+            <p><b>Opis:</b>  {{object.description.descriptions}}</p>
+            <i>Aktualny stopień wykorzystania budżetu:</i>
+            {% if object.budget_calculation > 100 %}
+            <center><div class="progress-circle progress-100"><span>{{object.budget_calculation}}</span></div><br> <h4>BUDŻET PRZEKROCZONY!!</h4></center>
+            {% else %}
+            <center><div class="progress-circle progress-{{object.budget_calculation}}"><span>{{object.budget_calculation}}</span></div></center>
+            {% endif %}
+            <p><b>Zakładany koszt budowy: </b>  {{object.budget}} zł</p>
+            <p><b>Aktualny koszt budowy:</b> {{ object.build_cost }} zł</p>
+            <a href="{% url 'mainbuild:edit_description' id=object.id %}">Edytuj parametry budowy</a>
+        </div>
+    </div>
+    <div class="build-column">
+            <form method="POST" action="{% url 'buildstages:add_stages' object.id %}">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                  <input type="text" name="add_stage" class="form-control" placeholder="Dodaj etap budowy" aria-label="Dodaj etap budowy" aria-describedby="basic-addon2" data-bs-toggle="tooltip" data-bs-placement="top" title="Czyli np: SSO - Stan surowy otwarty, Instalacje, Wykończenie itp.">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Dodaj</button>
+                  </div>
+                </div>
+            </form>
+            <div class="container-fluid p-0 my-1 border">
+                    <center>
+                    <h4> {{ object.name }}</h4>
+                    </center>
+            </div>
+                <div class="buildstages-container">
+                        {% for buildstage in build_stages %}
+                        <div class="container-fluid bg-light my-3 border">
+                            <div class="buildstages-container1">
+                                <div class="buildstages-info">
+                                    <p><i>Etap: </i><b>{{ buildstage.stage_name }}</b></p>
+                                    <i>Data rozpoczęcia etapu:</i> {{ buildstage.stage_startdate }}<br>
+                                    <i>zakładany koszt etapu:</i> {{ buildstage.budget }} zł<br>
+                                    <p><i>Aktualny koszt etapu:</i> {{ buildstage.stage_cost }} zł</p>
+                                </div>
+                                <div class="buildstages-edit">
+
+                                    <p>Etap zakonczony:{% if buildstage.complete %} TAK {% else %} NIE {% endif %}</p>
+                                    <div class="edit-item">
+                                        <a href="{% url 'buildstages:edit_stage' id=buildstage.id %}"><i class="fas fa-pen"></i></a>
+                                    </div>
+                                    <div class="delete-stage">
+                                        <a href="{% url 'buildstages:delete_stage' id=buildstage.id %}" style="color: red"><i class="far fa-trash-alt"></i></a>
+                                    </div>
+
+                                </div>
+                            </div>
+                            Wykorzystany budżet:
+                            {% if buildstage.stage_budget_calculation > 100 %}
+                            <div class="progress">
+                                        <div class="progress-bar progress-bar-success progress-bar-striped" style="width: 100%;">
+                                            <div class="progress-value">Budżet przekroczony!</div>
+                                        </div>
+                            </div>
+                            {% else %}
+                            <div class="progress">
+                                        <div class="progress-bar progress-bar-success progress-bar-striped" style="width: {{ buildstage.stage_budget_calculation }}%;">
+                                            <div class="progress-value">{{ buildstage.stage_budget_calculation }}%</div>
+                                        </div>
+                            </div>
+                            {% endif %}
+                                <div class="container-fluid p-2 my-2 border">
+                                <button class="container-fluid p-1 my-1 border" data-toggle="modal" data-target="#stagemodal_{{ buildstage.id }}" aria-label="Dodaj materiał" aria-describedby="basic-addon2" data-bs-toggle="tooltip" data-bs-placement="top" title="Dodaj materiał lub usługę">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <div class="modal fade" id="stagemodal_{{ buildstage.id }}" tabindex="-1" aria-labelledby="StageModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="StageModalLabel">Dodaj materiał lub usługę</h5>
+                                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                          <div class="modal-body">
+                                                    <form method="POST" action="{% url 'buildstages:add_material' buildstage.id %}" id="{{ buildstage.id }}">
+                                                        {% csrf_token %}
+                                                        <div class="">
+                                                          <input type="text" name="add_material" class="form-control" placeholder="Wpisz nazwe materiału lub usługę" aria-label="Dodaj materiał lub usługę" aria-describedby="basic-addon2" data-bs-toggle="tooltip" data-bs-placement="top" title="nazwij tą pozycję według własnego uznania">
+                                                            <br>
+                                                          <input type="number" name="add_material_price" class="form-control" placeholder="Wpisz koszt lub zostaw puste" aria-label="Wpisz koszt lub zostaw puste" aria-describedby="basic-addon2" data-bs-toggle="tooltip" data-bs-placement="top" title="Wartość tą możesz dodać lub modyifkować w późniejszym etapie">
+                                                            <br>
+                                                            <div class="input-group-append">
+                                                              <button class="btn btn-outline-secondary" type="submit">Dodaj materiał lub usługę</button>
+                                                          </div>
+                                                        </div>
+                                                    </form>
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                    <ul>
+                                        Nazwa materiału lub usługi:
+                                    {% for element in buildstage.elements.all %}
+                                        <li>
+                                            <div class="element-container">
+                                                <div class="ele_name">
+                                                 <b>{{ element }}</b>
+                                                </div>
+                                                <div class="ele_cost">
+                                                    {{ element.price }} zł <a href="{% url 'buildstages:edit_element' element.id %}" data-toggle="modal" data-target="#edit_element_{{ element.id }}"><i class="fas fa-pen"></i></a><br>
+                                                </div>
+                                                <div class="modal fade" id="edit_element_{{ element.id }}" tabindex="-1" aria-labelledby="StageModalLabel" aria-hidden="true">
+                                                  <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                      <div class="modal-header">
+                                                        <h5 class="modal-title" id="EditModalLabel">Edytuj element</h5>
+                                                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                                      </div>
+                                                          <div class="modal-body">
+                                                                <form method="POST" action="{% url 'buildstages:edit_element' element.id %}" id="{{ element.id }}">
+                                                                    {% csrf_token %}
+                                                                    <div class="">
+                                                                      <input type="text" name="ele_name_edit" class="form-control" placeholder="{{ element.element_name }}" aria-label="" aria-describedby="basic-addon2" data-bs-toggle="tooltip" data-bs-placement="top" title="Zmień lub zostaw">
+                                                                        <br>
+                                                                      <input type="number" name="ele_price_edit" class="form-control" placeholder="{{ element.price }}" aria-label="" aria-describedby="basic-addon2" data-bs-toggle="tooltip" data-bs-placement="top" title="Zmień lub zostaw">
+                                                                        <br>
+                                                                        <div class="input-group-append">
+                                                                          <button class="btn btn-outline-secondary" type="submit">Zapisz zmiany</button>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </form>
+                                                              <br>
+                                                                <form method="POST" action="{% url 'buildstages:delete_element' element.id %}" id="{{ element.id }}">
+                                                                    {% csrf_token %}
+                                                                    <input type='text' name="delete" hidden>
+                                                                    <button class="btn btn-danger" type="submit">Usuń element</button>
+                                                                </form>
+
+                                                              <br>
+
+
+                                                          </div>
+                                                              <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                                                              </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+                                </div>
+                        </div>
+                        {% empty %}
+                            <p>brak dodanych etapów budowych</p>
+                        {% endfor %}
+
+                </div>
+    </div>
+</div>
+<script>
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+
+    var message_ele = document.getElementById("message_container");
+    setTimeout(function(){
+       message_ele.style.display = "none";
+    }, 2000);
+
+    var myModal = document.getElementById('myModal')
+    var myInput = document.getElementById('myInput')
+
+    myModal.addEventListener('shown.bs.modal', function () {
+      myInput.focus()
+    })
+
+</script>
+
+{% endblock %}

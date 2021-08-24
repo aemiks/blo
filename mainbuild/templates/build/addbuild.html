@@ -1,0 +1,26 @@
+{% extends 'base_panel.html' %}
+{% block title %}Dodaj budowę {% endblock %}
+{% load bootstrap %}
+{% block content %}
+
+<style>
+    .center-column{
+		width:800px;
+		margin: 20px auto;
+		padding:20px;
+		background-color: #fff;
+		border-radius: 3px;
+		box-shadow: 3px 2px 15px 0px rgba(0,0,0,0.75);
+	}
+</style>
+
+<div class="center-column">
+    <center>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <button type="submit">Klik</button>
+    </form>
+    </center>
+</div>
+{% endblock %}

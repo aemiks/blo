@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Moja budowa {% endblock %}
+{% block content %}
+<br>
+<br>
+<div class="container px-4">
+  <div class="row gx-5">
+    <div class="col">
+     <div class="p-3 border bg-light">
+         <center>Dodaj nową budowę
+         <div>
+             <a class="btn" href="{% url 'mainbuild:addbuild' %}"><i class="fas fa-plus fa-3x"></i></a>
+         </div>
+         </center>
+     </div>
+    </div>
+    <div class="col">
+        <center>
+            <div class="p-3 border bg-light">Twoje budowy
+                <br>
+                <a class="btn" href="{% url 'mainbuild:building_list' %}"><i class="fas fa-house-user fa-3x"></i></a>
+            </div>
+        </center>
+    </div>
+  </div>
+</div>
+<br>
+<br>
+
+{% endblock %}

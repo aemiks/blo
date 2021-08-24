@@ -1,0 +1,25 @@
+{% extends 'base_panel.html' %}
+{% block title %}Dodaj opis {% endblock %}
+{% load bootstrap %}
+{% block content %}
+
+<div>
+    <center>
+        <p>{{ build.name }}</p>
+        <div class="container px-4">
+          <div class="row gx-5">
+            <div class="col">
+            <div class="p-3 border bg-light">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form|bootstrap }}
+                    {{ form_description|bootstrap }}
+                    <button type="submit">Klik</button>
+                </form>
+            </div>
+            </div>
+          </div>
+        </div>
+    </center>
+</div>
+{% endblock %}

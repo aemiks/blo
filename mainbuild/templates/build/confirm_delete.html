@@ -1,0 +1,17 @@
+{% extends 'base_panel.html' %}
+{% block title %}Dodaj budowę {% endblock %}
+{% load bootstrap %}
+{% block content %}
+    <div>
+        <center>
+            <br>
+                <div class="alert alert-danger" role="alert">
+                    <h5 class="card-title">Czy jesteś pewien że chcesz usunąć budowę "{{ build.name }}" ?
+                        <p>Stracisz wszystkie zapisane parametry</p></h5></div>
+                 <form method="post">
+                    {% csrf_token %}
+                 <button type="submit" class="btn btn-danger">Usuń budowę</button>
+                </form>
+        </center>
+    </div>
+{% endblock %}

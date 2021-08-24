@@ -1,0 +1,18 @@
+{% extends 'base_panel.html' %}
+{% block title %}Dodaj budowę {% endblock %}
+{% load bootstrap %}
+{% block content %}
+    <div>
+        <center>
+            <br>
+                <div class="alert alert-danger" role="alert">
+                    <h5 class="card-title">Czy jesteś pewien że chcesz usunąć etap "{{ stage }}" ?
+                        <p>Stracisz wszystkie zapisane parametry etapu "{{ stage }}" oraz wszystkie jego elementy</p></h5></div>
+                 <form method="post">
+                    {% csrf_token %}
+                 <button type="submit" class="btn btn-danger">Usuń etap</button>
+                </form>
+                <a class="btn" href="{% url 'buildstages:build_stages' id=object.id %}">Wróć do Panelu</a><br>
+        </center>
+    </div>
+{% endblock %}

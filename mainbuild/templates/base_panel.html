@@ -1,0 +1,88 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+        <title>BLO - Buduj Licz Osczędzaj</title>
+        <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico'%}" />
+        <script src="https://kit.fontawesome.com/673508cbf1.js" crossorigin="anonymous"></script>
+
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="HandheldFriendly" content="true">
+
+        <!-- my css + bootstrap -->
+        <link href="{% static 'css/mycss.css' %}" rel="stylesheet" />
+
+</head>
+<style>
+.dropbtn {
+  margin-top: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}
+
+</style>
+<body>
+    <div class="nav-container">
+                <a href="{% url 'mainbuild:home' %}">
+                    <img src="{% static 'assets/img/logo.png' %}" alt="" width="170" height="60">
+                </a>
+                    {% if user.is_authenticated %}
+                    <div class="nav-items">
+                        <a class="" href="#"><img src="{% static 'assets/img/user-icon.svg' %}"></img></a>
+                        <div class="dropdown"
+                        <a class="dropbtn" href="#"><img src="{% static 'assets/img/drop-icon.svg' %}"></img></a>
+                              <div class="dropdown-content">
+                                <a href="{% url 'mainbuild:building_list' %}">Panel użytkownika</a>
+                                <a href="#">Zarządzaj kontem</a>
+                              </div>
+                        </div>
+                    </div>
+                        <div class="logout-frame"><a href="{% url 'logout' %}">Wyloguj</a>
+                    </div>
+                    </div>
+                    {% else %}
+                    <div class="nav-items">
+                    </div>
+                        <div class="logout-frame"><a href="{% url 'register' %}">Zarejestruj</a>
+                        </div>
+
+
+                        <div class="logout-frame"><a href="{% url 'login' %}">Zaloguj</a>
+                        </div>
+                    </div>
+                    {% endif %}
+    <div>
+    {% block content %}
+
+    {% endblock %}
+
+</body>
+</html>
