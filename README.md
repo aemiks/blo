@@ -1,3 +1,4 @@
+
 ## BLO - Buduj, Licz, Oszczędzaj
 Web application for creating cost estimates, managing
 construction of e.g. a house, allows to count and control
@@ -13,8 +14,8 @@ This project is simple Lorem ipsum dolor generator.
 	
 ## Technologies
 Project is created with:
-* Python 3+
-* Django 3
+* ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Django)
+* ![](https://img.shields.io/badge/django%20version-3.2.2-blue)
 
 	
 ## Setup
