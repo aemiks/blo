@@ -4,13 +4,19 @@ Web application for creating cost estimates, managing
 construction of e.g. a house, allows to count and control
 construction costs
 
+web version avaiable on: https://blo-dev.herokuapp.com/
+
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [Setup](#setup)
 
 ## General info
-This project is simple Lorem ipsum dolor generator.
+
+The application code is written in English, but the web project itself is in Polish.
+
+The project allows you to add an unlimited number of builds:
+
 	
 ## Technologies
 Project is created with:
