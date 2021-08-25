@@ -5,6 +5,8 @@ construction of e.g. a house, allows to count and control
 construction costs
 
 web version avaiable on: https://blo-dev.herokuapp.com/
+user: test
+pass: test
 
 ## Table of contents
 * [General info](#general-info)
