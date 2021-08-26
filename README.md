@@ -23,10 +23,8 @@ The application code is written in English, but the web project itself is in Pol
 #### And for each construction site, the ability to add stages composed of any elements or services:
 ![](https://github.com/aemiks/blo/blob/main/static/assets/img/addstage.png)
 
-![](https://github.com/aemiks/blo/blob/main/static/assets/img/addelement.png)
-
 ####  In addition, any of the elements or stages, can be edited or deleted at any time.
-![](https://github.com/aemiks/blo/blob/main/static/assets/img/editelement.png)
+![](https://github.com/aemiks/blo/blob/main/static/assets/img/buildstage-gif.gif)
 
 #### The application in real time recalculates the current used budget of the entire construction, and the costs of individual stages.
 ![](https://github.com/aemiks/blo/blob/main/static/assets/img/budget.png)
