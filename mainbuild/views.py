@@ -1,11 +1,13 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect, reverse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from .models import  MyBuildDescription, MyBuild
 from .forms import MyBuildDescriptionForm, RegisterForm, MyBuildForm, MyBuildFormEdit
 from django.views.generic import ListView, View, TemplateView, DetailView
 
 class UserRegisterView(View):
-    """User register"""
+    """
+    User register view, includes support for post and get functions
+    """
     form_class = RegisterForm
     template_name = 'registration/register.html'
 
@@ -14,6 +16,10 @@ class UserRegisterView(View):
         return render(request, self.template_name, {'register_form': register_form})
 
     def post(self, request):
+        """
+        Check if form is valid and make user with username and password
+        then redirect to "home"
+        """
         register_form = self.form_class(request.POST)
 
         if register_form.is_valid():
@@ -33,55 +39,52 @@ class UserRegisterView(View):
 
         return render(request, 'index.html', {'register_form': register_form})
 
-def base(request):
-    return render(request, 'index.html')
-
-class MyBuildView(View):
+class MyBuildListView(ListView):
+    """
+    View responsible for displaying list of builds and their editing
+    """
     template_name = 'build/mybuild_list.html'
+    queryset = MyBuild.objects.all()
 
-    def userpanel(request):
-        return render(request, 'build/mybuild_list.html')
-
-    def addbuild(request):
+    def add_build(request):
+        """
+        Function responsible for adding new construction,
+        checks if the form is correct, then assigns build to user
+        """
         form = MyBuildForm(request.POST or None, request.FILES or None)
 
         if form.is_valid():
             data = form.cleaned_data
             user_form = MyBuild.objects.create(**data, user=request.user)
-
             return redirect('mainbuild:building_list')
 
         context = {
             'form': form,
         }
+
         return render(request, 'build/addbuild.html', context)
 
-    def mybuild(request):
-        form = MyBuildDescriptionForm(request.POST or None)
-
-        if form.is_valid():
-            form.save()
-
-        context = {
-            'form': form,
-        }
-        return render(request, 'build/userpanel.html', context)
-
     def delete_build(request, id):
+        """
+        Function responsible for deleting construction,
+        """
         build = get_object_or_404(MyBuild, pk=id)
 
         if request.method == "POST":
             build.delete()
             return redirect("mainbuild:building_list")
 
-        return render(request, 'build/confirm_delete.html', {'build':build})
+        context = {
+            'build': build,
+        }
 
-
-class MyBuildListView(ListView):
-    template_name = 'build/mybuild_list.html'
-    queryset = MyBuild.objects.all()
+        return render(request, 'build/confirm_delete.html', context)
 
     def edit_description(request, id):
+        """
+        Function responsible for editing build description,
+        checks if the description exist, if not add new description to build
+        """
         build = get_object_or_404(MyBuild, pk=id)
 
         try:
@@ -104,7 +107,7 @@ class MyBuildListView(ListView):
             'form': form,
             'form_description': form_description,
         }
-        return render(request, 'build/adddescription.html', context)
+        return render(request, 'build/add_description.html', context)
 
 
     def get_context_data(self, **kwargs):
@@ -113,3 +116,9 @@ class MyBuildListView(ListView):
         context = super().get_context_data(**kwargs)
         context['userbuild_list'] = self.userbuild_list
         return context
+
+def base(request):
+    """
+    Base view, rendering index.html
+    """
+    return render(request, 'index.html')

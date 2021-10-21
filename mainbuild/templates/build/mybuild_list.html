@@ -6,7 +6,7 @@
 
 <div class="buildlist-container">
     <div class="addbuild-container">
-                    <a class="btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Dodaj budowę" href="{% url 'mainbuild:addbuild' %}"><i class="fas fa-plus fa-2x"></i></a>
+                    <a class="btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Dodaj budowę" href="{% url 'mainbuild:add_build' %}"><i class="fas fa-plus fa-2x"></i></a>
     </div>
     {% if object_list %}
         {% for object in userbuild_list %}

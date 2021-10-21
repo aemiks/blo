@@ -1,4 +1,4 @@
-from django.shortcuts import render, reverse, redirect, HttpResponseRedirect, get_object_or_404
+from django.shortcuts import render, reverse, HttpResponseRedirect, get_object_or_404
 from django.views.generic import ListView, View, TemplateView, DetailView
 from .models import BuildStage, BuildStageElement
 from .forms import BuildStageElementForm, BuildStageForm
@@ -7,6 +7,9 @@ from django.contrib import messages
 
 
 class BuildStagesDetailView(DetailView):
+    """
+    Class responsible for editing stages, add new one, delete etc.
+    """
     template_name = 'buildstages/build_stages.html'
     model = BuildStage
 
@@ -15,7 +18,7 @@ class BuildStagesDetailView(DetailView):
         nick = request.user
         build_stages = BuildStage.objects.filter(build_id=object.id)
 
-        ## Stage cost calculation ##
+        # Stage cost calculation
         for stage in build_stages:
             elements_cost = 0
             for element in stage.elements.all():
@@ -23,7 +26,7 @@ class BuildStagesDetailView(DetailView):
             stage.stage_cost = elements_cost
             stage.save()
 
-        ## stage used budget calculation (to progress bar)##
+        # stage used budget calculation (to progress bar)
         for stage in build_stages:
             if stage.stage_cost and stage.budget:
                 used_budget = (stage.stage_cost*100)/stage.budget
@@ -33,13 +36,13 @@ class BuildStagesDetailView(DetailView):
             else:
                 stage.stage_budget_calculation = 0
 
-        ## build cost - calculation ##
+        # build cost - calculation
         object.build_cost = 0
         for stage in build_stages:
             object.build_cost = object.build_cost + stage.stage_cost
             object.save()
 
-        ## used budget - whole build (circle progress bar) ##
+        # used budget - whole build (circle progress bar)
         if object.build_cost and object.budget:
             used_budget = int(round((object.build_cost*100)/object.budget, 0))
             object.budget_calculation = used_budget
@@ -54,6 +57,7 @@ class BuildStagesDetailView(DetailView):
         if add_stage_input:
             build_stage = BuildStage.objects.create(build_id=object, stage_name=add_stage_input)
             build_stage.save()
+
         return HttpResponseRedirect(reverse('buildstages:build_stages', args=[object.id]))
 
     def add_material(request, **kwargs):
@@ -62,8 +66,7 @@ class BuildStagesDetailView(DetailView):
         stage = BuildStage.objects.filter(id=kwargs['id']).get()
         object = MyBuild.objects.filter(id=stage.build_id.id).get()
 
-
-        ## adding element in stage ##
+        # adding element in stage - logic to handle price None or 0
         if add_material_price_input != "":
             element = BuildStageElement.objects.create(element_name=add_material_input, price=add_material_price_input, buildstage=stage)
             element.save()
@@ -84,7 +87,6 @@ class BuildStagesDetailView(DetailView):
             element.delete()
             messages.warning(request, 'usunięto element', extra_tags='alert alert-danger')
             return HttpResponseRedirect(reverse('buildstages:build_stages', args=[object.id]))
-
 
     def edit_stage(request, **kwargs):
         stage = get_object_or_404(BuildStage, id=kwargs['id'])
@@ -108,14 +110,15 @@ class BuildStagesDetailView(DetailView):
 
         return render(request, 'buildstages/confirm_delete_stage.html', {'stage': stage, 'object': object})
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         return context
 
 
 class BuildStageElementDetailView(DetailView):
+    """
+    Class responsible for editing elements
+    """
     model = BuildStageElement
 
     def edit_element(request, **kwargs):
@@ -126,7 +129,7 @@ class BuildStageElementDetailView(DetailView):
         element_name_edit = request.POST['ele_name_edit']
         element_price_edit = request.POST['ele_price_edit']
 
-        ## editting element in stage - logic  ##
+        # edit element in stage - logic to handle only name or price edit
         if element_price_edit:
             element_price_edit = int(element_price_edit)
         else:

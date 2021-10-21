@@ -13,4 +13,4 @@ urlpatterns = [
     path('edit_stage/<int:id>/', views.BuildStagesDetailView.edit_stage, name='edit_stage'),
     path('delete_element/<int:id>', views.BuildStagesDetailView.delete_element, name='delete_element'),
     path('delete_stage/<int:id>', views.BuildStagesDetailView.delete_stage, name='delete_stage'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
